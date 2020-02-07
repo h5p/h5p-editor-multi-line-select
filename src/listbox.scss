@@ -5,7 +5,7 @@
   [role="listbox"] {
     min-height: 18em;
     padding: 0;
-    background: white;
+    background-color: white;
     border: 1px solid #aaa;
   }
 
@@ -15,7 +15,7 @@
   }
 
   [role="option"].focused {
-    background: #bde4ff;
+    background-color: #bde4ff;
   }
 
   button {
@@ -23,6 +23,7 @@
     font-family: Lato, Sans-Serif, Arial;
     background-color: transparent;
     border: 1px solid rgba(208, 206, 217, 0.5);
+    cursor: pointer;
   }
 
 
@@ -41,6 +42,11 @@
   [role="option"],
   button.multi-select {
     padding: 0.5em 4em 0.5em 1em;
+  }
+
+  button.multi-select:hover,
+  button.multi-select[aria-expanded="true"] {
+    box-shadow: 0 0 8px 3px rgba(208, 206, 217, 0.5);
   }
 
   button.multi-select::after {
@@ -78,6 +84,9 @@
     position: absolute;
     margin: 0;
     width: 100%;
+    z-index: 1;
+    outline: none;
+    cursor: pointer;
   }
 
   .hidden {

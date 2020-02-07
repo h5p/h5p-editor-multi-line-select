@@ -62,6 +62,8 @@ H5PEditor.widgets.multiLineSelect = H5PEditor.MultiLineSelect = class MultiLineS
     });
 
     select.innerHTML = defaultOption.innerHTML;
+    listBox.setAttribute('aria-activedescendant', defaultOption.id);
+    defaultOption.classList.add('focused');
 
     selectWrapper.appendChild(select);
     selectWrapper.appendChild(listBox);
