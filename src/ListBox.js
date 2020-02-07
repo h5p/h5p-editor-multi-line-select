@@ -267,7 +267,7 @@ aria.Listbox.prototype.findMatchInRange = function(list, startIndex, endIndex) {
 aria.Listbox.prototype.checkClickItem = function(evt) {
   let element = evt.target;
   if (evt.target.getAttribute('role') !== 'option') {
-    element = evt.target.closest('[role="option"]');
+    element = H5P.jQuery(evt.target).closest('[role="option"]')[0];
   }
 
   this.focusItem(element);
