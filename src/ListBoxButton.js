@@ -34,6 +34,7 @@ aria.ListboxButton.prototype.registerEvents = function() {
     'keydown',
     this.checkHide.bind(this)
   );
+  this.listbox.listboxNode.addEventListener('click', this.checkHide.bind(this));
   this.listbox.setHandleFocusChange(this.onFocusChange.bind(this));
 };
 
@@ -61,15 +62,29 @@ aria.ListboxButton.prototype.checkHide = function(evt) {
       this.button.focus();
       break;
   }
+
+  if (evt.type === 'click') {
+    this.hideListbox();
+  }
 };
 
 aria.ListboxButton.prototype.showListbox = function() {
+  if (this.button.getAttribute('aria-expanded') === 'true') {
+    this.hideListbox();
+    return;
+  }
+
   aria.Utils.removeClass(this.listbox.listboxNode, 'hidden');
   this.button.setAttribute('aria-expanded', 'true');
   this.listbox.listboxNode.focus();
 };
 
-aria.ListboxButton.prototype.hideListbox = function() {
+aria.ListboxButton.prototype.hideListbox = function(e = {}) {
+  // If button would gain focus, let it handle hiding the listbox
+  if (e.relatedTarget === this.button) {
+    return;
+  }
+
   aria.Utils.addClass(this.listbox.listboxNode, 'hidden');
   this.button.removeAttribute('aria-expanded');
 };

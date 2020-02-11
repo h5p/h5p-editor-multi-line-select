@@ -3,7 +3,6 @@
   position: relative;
 
   [role="listbox"] {
-    min-height: 18em;
     padding: 0;
     background-color: white;
     border: 1px solid #aaa;
@@ -41,7 +40,7 @@
 
   [role="option"],
   button.multi-select {
-    padding: 0.5em 4em 0.5em 1em;
+    padding: 0.85em 1em;
   }
 
   button.multi-select:hover,
@@ -50,27 +49,23 @@
   }
 
   button.multi-select::after {
-    width: 0;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-top: 8px solid #000;
+    background: #fff url('./assets/down.png') no-repeat;
+    width: 1em;
+    height: 1em;
     content: " ";
     position: absolute;
-    right: 0.5em;
+    right: 0.85em;
     top: 50%;
     transform: translateY(-50%);
   }
 
-  button.multi-select[aria-expanded="true"]::after {
-    border-top: 0;
-    border-bottom: 8px solid #000;
+  .title {
+    font-weight: bold;
   }
 
   .description {
     font-size: 0.75em;
     color: #707070;
-    font-style: italic;
   }
 
   button .description {
@@ -78,8 +73,8 @@
   }
 
   .listbox {
+    font-family: Lato, Sans-Serif, Arial;
     border-top: 0;
-    max-height: 10em;
     overflow-y: auto;
     position: absolute;
     margin: 0;
