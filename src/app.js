@@ -27,16 +27,19 @@ H5PEditor.widgets.multiLineSelect = H5PEditor.MultiLineSelect = class MultiLineS
     const selectWrapper = document.createElement('div');
     selectWrapper.classList.add('h5p-editor-multi-line-select');
 
+    // Button for opening dropdown
     const select = document.createElement('button');
     select.setAttribute('aria-haspopup', 'listbox');
     select.classList.add('multi-select');
 
+    // Dropdown
     const listBox = document.createElement('ul');
     listBox.tabIndex = -1;
     listBox.setAttribute('role', 'listbox');
     listBox.classList.add('hidden');
     listBox.classList.add('listbox');
 
+    // Generate options for dropdown
     let defaultOption;
     this.field.options.forEach(data => {
       const option = document.createElement('li');
@@ -61,6 +64,7 @@ H5PEditor.widgets.multiLineSelect = H5PEditor.MultiLineSelect = class MultiLineS
       }
     });
 
+    // Set active option
     select.innerHTML = defaultOption.innerHTML;
     listBox.setAttribute('aria-activedescendant', defaultOption.id);
     defaultOption.classList.add('focused');
@@ -68,8 +72,11 @@ H5PEditor.widgets.multiLineSelect = H5PEditor.MultiLineSelect = class MultiLineS
     selectWrapper.appendChild(select);
     selectWrapper.appendChild(listBox);
 
+    // Add listbox functionality to elements
     const ariaListBox = new ListBox(listBox);
     const ariaListboxButton = new ListBoxButton(select, ariaListBox);
+
+    // Trigger changes when a new option is selected
     ariaListboxButton.on('focusChange', focusedButton => {
       const buttonId = focusedButton.data.id.split('-');
       this.value = buttonId[buttonId.length - 1];
