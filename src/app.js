@@ -1,8 +1,22 @@
-import ListBox from './ListBox';
-import ListBoxButton from './ListBoxButton';
+import ListBox from './listbox';
+import ListBoxButton from './listbox-button';
 import './listbox.scss';
 
+/**
+ * Multi-line select widget
+ *
+ * @type {MultiLineSelect}
+ */
 H5PEditor.widgets.multiLineSelect = H5PEditor.MultiLineSelect = (function() {
+  /**
+   * Multi-line select constructor
+   *
+   * @param {Object} parent Parent widget
+   * @param {Object} field Semantics field
+   * @param {Object} params Parameters stored for widget
+   * @param {Function} setValue Set new value for widget
+   * @constructor
+   */
   function MultiLineSelect(parent, field, params, setValue) {
     this.parent = parent;
     this.field = field;
@@ -12,6 +26,11 @@ H5PEditor.widgets.multiLineSelect = H5PEditor.MultiLineSelect = (function() {
     this.id = H5PEditor.getNextFieldId(this.field);
     this.changes = [];
 
+    /**
+     * Append widget to DOM
+     *
+     * @param {jQuery} $wrapper Element that we will append to
+     */
     this.appendTo = $wrapper => {
       const fieldMarkup = H5PEditor.createFieldMarkup(this.field, '', this.id);
       const select = this.createSelect();
@@ -22,6 +41,11 @@ H5PEditor.widgets.multiLineSelect = H5PEditor.MultiLineSelect = (function() {
       this.select = select;
     };
 
+    /**
+     * Create multi line selector DOM elements
+     *
+     * @returns {HTMLDivElement} Multi-line select wrapper
+     */
     this.createSelect = () => {
       const selectWrapper = document.createElement('div');
       selectWrapper.classList.add('h5p-editor-multi-line-select');
@@ -86,16 +110,31 @@ H5PEditor.widgets.multiLineSelect = H5PEditor.MultiLineSelect = (function() {
       return selectWrapper;
     };
 
+    /**
+     * Trigger an event with new widget value to anyone listening for changes
+     *
+     * @param {string} value New value of multi-line selector
+     */
     this.triggerListeners = value => {
       this.changes.forEach(change => {
         change(value);
       });
     };
 
+    /**
+     * Validate this widget. It is always valid.
+     *
+     * @returns {boolean} Returns validity of widget
+     */
     this.validate = () => {
       return true;
     };
 
+    /**
+     * Get select wrapper
+     *
+     * @returns {HTMLDivElement} Multi-line select wrapper
+     */
     this.getElement = () => {
       return this.select;
     };
