@@ -1,8 +1,9 @@
 import aria from './utils';
 
 /**
- * Aria ListBoxButton adaption
- * @see https://www.w3.org/TR/wai-aria-practices-1.1/examples/listbox/js/listbox-collapsible.js
+ * Aria ListBoxButton adaption.
+ * This software includes materials copied from or derived
+ * from https://www.w3.org/TR/wai-aria-practices-1.1/examples/listbox/js/listbox.js
  * @licence https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
  */
 

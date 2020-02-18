@@ -1,15 +1,12 @@
 import aria from './utils';
 
 /**
- * Aria ListBox adaption
- * @see https://www.w3.org/TR/wai-aria-practices-1.1/examples/listbox/js/listbox.js
+ * Aria ListBox adaption.
+ * This software includes materials copied from or derived
+ * from https://www.w3.org/TR/wai-aria-practices-1.1/examples/listbox/js/listbox.js
  * @licence https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
  */
 
-/*
- *   This content is licensed according to the W3C Software License at
- *   https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
- */
 /**
  * @namespace aria
  */
