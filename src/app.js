@@ -1,5 +1,3 @@
-import ListBox from './listbox';
-import ListBoxButton from './listbox-button';
 import './listbox.scss';
 
 /**
@@ -42,6 +40,76 @@ H5PEditor.widgets.multiLineSelect = H5PEditor.MultiLineSelect = (function() {
     };
 
     /**
+     * Toggle list box visibility
+     *
+     * @param {Boolean} [showBox] Force show/hide the list box
+     */
+    this.toggleListBox = showBox => {
+      const isHidden = this.listBox.classList.contains('hidden');
+      showBox = showBox !== undefined ? showBox : isHidden;
+
+      if (!showBox) {
+        this.listBox.classList.add('hidden');
+        this.selectButton.removeAttribute('aria-expanded');
+        return;
+      }
+
+      // Show box
+      this.listBox.classList.remove('hidden');
+      this.selectButton.setAttribute('aria-expanded', 'true');
+      this.listBox.focus();
+    };
+
+    /**
+     * Move vertically between the list box options
+     *
+     * @param {Boolean} moveUp Move up/down in the list
+     */
+    this.moveVertically = (moveUp = true) => {
+      const selected = this.listBox.querySelector('.focused');
+
+      let next = selected.previousSibling;
+      if (moveUp) {
+        next = selected.nextSibling;
+      }
+
+      // Start/end of list
+      if (!next) {
+        return;
+      }
+
+      // Force show list-box and focus it
+      this.toggleListBox(true);
+      this.chooseOption(next);
+    };
+
+    /**
+     * Choose an option from the selector.
+     *
+     * @param {HTMLElement} [option] Option element
+     */
+    this.chooseOption = option => {
+      const focused = this.listBox.querySelector('.focused');
+      if (focused) {
+        focused.classList.remove('focused');
+        focused.removeAttribute('aria-selected');
+      }
+
+      option.classList.add('focused');
+      option.setAttribute('aria-selected', 'true');
+
+      // Set new option in the selector
+      this.selectButton.innerHTML = option.innerHTML;
+      this.listBox.setAttribute('aria-activedescendant', option.id);
+
+      // Update theme
+      const buttonId = option.id.split('-');
+      this.value = buttonId[buttonId.length - 1];
+      this.setValue(this.field, this.value);
+      this.triggerListeners(this.value);
+    };
+
+    /**
      * Create multi line selector DOM elements
      *
      * @returns {HTMLDivElement} Multi-line select wrapper
@@ -54,6 +122,25 @@ H5PEditor.widgets.multiLineSelect = H5PEditor.MultiLineSelect = (function() {
       const select = document.createElement('button');
       select.setAttribute('aria-haspopup', 'listbox');
       select.classList.add('multi-select');
+      this.selectButton = select;
+
+      select.addEventListener('click', () => {
+        this.toggleListBox();
+      });
+      select.addEventListener('keydown', e => {
+        switch (e.key) {
+          case 'Down':
+          case 'ArrowDown':
+            this.moveVertically();
+            e.preventDefault();
+            break;
+          case 'Up':
+          case 'ArrowUp':
+            this.moveVertically(false);
+            e.preventDefault();
+            break;
+        }
+      });
 
       // Dropdown
       const listBox = document.createElement('ul');
@@ -61,6 +148,44 @@ H5PEditor.widgets.multiLineSelect = H5PEditor.MultiLineSelect = (function() {
       listBox.setAttribute('role', 'listbox');
       listBox.classList.add('hidden');
       listBox.classList.add('listbox');
+
+      listBox.addEventListener('keydown', e => {
+        switch (e.key) {
+          case 'Down':
+          case 'ArrowDown':
+            this.moveVertically();
+            e.preventDefault();
+            break;
+          case 'Up':
+          case 'ArrowUp':
+            this.moveVertically(false);
+            e.preventDefault();
+            break;
+          case 'Enter':
+          case ' ':
+            // Close list-box
+            this.selectButton.focus();
+            // Prevent click from triggering on select button
+            e.preventDefault();
+        }
+      });
+
+      listBox.addEventListener('blur', e => {
+        const ie11Click =
+          e.relatedTarget === null &&
+          (listBox.contains(document.activeElement) ||
+            listBox === document.activeElement);
+
+        const clickedAlternative =
+          e.relatedTarget &&
+          (listBox.contains(e.relatedTarget) || listBox === e.relatedTarget);
+
+        if (!(clickedAlternative || ie11Click)) {
+          this.toggleListBox(false);
+        }
+      });
+
+      this.listBox = listBox;
 
       // Generate options for dropdown
       let defaultOption;
@@ -80,6 +205,26 @@ H5PEditor.widgets.multiLineSelect = H5PEditor.MultiLineSelect = (function() {
         option.appendChild(title);
         option.appendChild(description);
 
+        // Add movement event listeners
+        option.addEventListener('keydown', e => {
+          switch (e.key) {
+            case 'Down':
+            case 'ArrowDown':
+              this.moveVertically(false);
+              e.preventDefault();
+              break;
+            case 'Up':
+            case 'ArrowUp':
+              this.moveVertically();
+              e.preventDefault();
+          }
+        });
+
+        option.addEventListener('click', () => {
+          this.chooseOption(option);
+          this.toggleListBox(false);
+        });
+
         listBox.appendChild(option);
 
         if (this.params === data.value || !defaultOption) {
@@ -88,24 +233,10 @@ H5PEditor.widgets.multiLineSelect = H5PEditor.MultiLineSelect = (function() {
       });
 
       // Set active option
-      select.innerHTML = defaultOption.innerHTML;
-      listBox.setAttribute('aria-activedescendant', defaultOption.id);
-      defaultOption.classList.add('focused');
+      this.chooseOption(defaultOption);
 
       selectWrapper.appendChild(select);
       selectWrapper.appendChild(listBox);
-
-      // Add listbox functionality to elements
-      const ariaListBox = new ListBox(listBox);
-      const ariaListboxButton = new ListBoxButton(select, ariaListBox);
-
-      // Trigger changes when a new option is selected
-      ariaListboxButton.on('focusChange', focusedButton => {
-        const buttonId = focusedButton.data.id.split('-');
-        this.value = buttonId[buttonId.length - 1];
-        this.setValue(this.field, this.value);
-        this.triggerListeners(this.value);
-      });
 
       return selectWrapper;
     };
