@@ -14,5 +14,10 @@
     {
       "path": "dist/multilineselect.js"
     }
+  ],
+  "preloadedJs": [
+    {
+      "path": "dist/h5p-editor-multiline-select.css"
+    }
   ]
 }
