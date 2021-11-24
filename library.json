@@ -5,10 +5,15 @@
   "author": "Joubel AS",
   "majorVersion": 1,
   "minorVersion": 0,
-  "patchVersion": 8,
+  "patchVersion": 9,
   "runnable": 0,
   "embedTypes": [
     "iframe"
+  ],
+  "preloadedJs": [
+    {
+      "path": "dist/multilineselect.js"
+    }
   ],
   "preloadedCss": [
     {
