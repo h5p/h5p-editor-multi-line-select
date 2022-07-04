@@ -2,11 +2,14 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = (env, argv) => {
-  const devMode = argv.mode !== "production";
+  const isDev = argv.mode !== "production";
   const config = {
+    mode: argv.mode,
+    context: path.resolve(__dirname, 'src'),
     entry: {
-      dist: './src/app.js',
+      dist: './app.js',
     },
+    devtool: isDev ? 'inline-source-map' : undefined,
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: 'multilineselect.js',
@@ -16,19 +19,14 @@ module.exports = (env, argv) => {
         {
           test: /\.js$/,
           include: path.resolve(__dirname, 'src'),
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              "@babel/preset-env"
-            ],
-          }
+          loader: 'babel-loader'
         },
         {
           test: /\.(sa|sc|c)ss$/i,
           include: path.resolve(__dirname, 'src'),
           use: [
             {
-              loader: devMode ? 'style-loader' : MiniCssExtractPlugin.loader
+              loader: isDev ? 'style-loader' : MiniCssExtractPlugin.loader
             },
             {
               loader: 'css-loader',
@@ -58,14 +56,8 @@ module.exports = (env, argv) => {
     },
     plugins: []
   };
-  if (devMode) {
-    config.devtool = 'inline-source-map';
-    config.entry.dist = './src/dev.js';
-  }
-  else {
-    config.plugins.push(new MiniCssExtractPlugin({
-      filename: 'h5p-editor-multiline-select.css'
-    }));
+  if (!isDev) {
+    config.plugins.push(new MiniCssExtractPlugin({ filename: 'h5p-editor-multiline-select.css' }));
   }
   return config;
 };
